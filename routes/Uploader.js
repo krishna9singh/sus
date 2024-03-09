@@ -870,7 +870,7 @@ const adstat = async () => {
 
     let userId = use[0]._id;
 
-    let post = pos[0];
+    let po = pos[0];
 
     let inside = randomNumber === 1 ? true : false;
 
@@ -879,7 +879,7 @@ const adstat = async () => {
     let click = Math.floor(Math.random() * 2);
 
     try {
-      const post = await Post.findById(post._id);
+      const post = await Post.findById(po._id);
       if (post) {
         let today = new Date();
 
