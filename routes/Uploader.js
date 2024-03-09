@@ -878,6 +878,7 @@ const adstat = async () => {
 
     try {
       const post = await Post.findById(pos[0]._id);
+
       if (post) {
         let today = new Date();
 
@@ -893,171 +894,176 @@ const adstat = async () => {
         });
 
         const ad = await Ads.findById(post.promoid);
-        const user = await User.findById(userId);
-        const advertiser = await Advertiser.findById(ad.advertiserid);
-
-        if (
-          ad &&
-          new Date(ad?.enddate) >= new Date() &&
-          ad.status !== "stopped" &&
-          advertiser
-        ) {
-          //calulating price
-          function calculateAdRate(ad) {
-            const costs = {
-              gender: { male: 3, female: 2 },
-              audience: {
-                Sales: 9,
-                Awareness: 5,
-                Clicks: 10,
-                Views: 4,
-                Downloads: 8,
-              },
-              type: { banner: 3, skipable: 7, "non-skipable": 9, infeed: 5 },
-            };
-
-            let adRate = 0;
-
-            if (ad && ad.type && costs.type.hasOwnProperty(ad.type)) {
-              adRate += costs.type[ad.type];
-
-              if (ad.gender && costs.gender.hasOwnProperty(ad.gender)) {
-                adRate += costs.gender[ad.gender] || 5;
-              }
-
-              if (ad.audience && costs.audience.hasOwnProperty(ad.audience)) {
-                adRate += costs.audience[ad.audience];
-              }
-
-              // if (ad.totalbudget) {
-              //   adRate *= parseInt(ad.totalbudget);
-              // }
-            }
-
-            return adRate;
-          }
-
-          const ad1 = {
-            type: ad.type,
-            gender: user?.gender,
-            audience: ad.goal,
-            totalbudget: ad?.totalbudget,
-          };
-
-          const adRate = calculateAdRate(ad1);
+        if (ad) {
+          const user = await User.findById(userId);
+          const advertiser = await Advertiser.findById(ad.advertiserid);
 
           if (
-            parseInt(adRate) > parseInt(advertiser.currentbalance) ||
-            parseInt(ad.totalbudget) < parseInt(ad.totalspent)
+            ad &&
+            new Date(ad?.enddate) >= new Date() &&
+            ad.status !== "stopped" &&
+            advertiser
           ) {
-            await Ads.updateOne(
-              { _id: ad._id },
-              { $set: { status: "stopped", stopreason: "Low Balance" } }
-            );
-            await Post.updateOne({ _id: post._id }, { $set: { kind: "post" } });
-          } else {
-            //updating ad stats
-            await Ads.updateOne(
-              { _id: ad._id },
-              {
-                $inc: {
-                  totalspent: adRate,
-                  views: view ? view : 0,
-                  clicks: click ? click : 0,
-                  impressions: imp ? imp : 0,
-                  cpc: click / adRate || 0,
+            //calulating price
+            function calculateAdRate(ad) {
+              const costs = {
+                gender: { male: 3, female: 2 },
+                audience: {
+                  Sales: 9,
+                  Awareness: 5,
+                  Clicks: 10,
+                  Views: 4,
+                  Downloads: 8,
                 },
-              }
-            );
+                type: { banner: 3, skipable: 7, "non-skipable": 9, infeed: 5 },
+              };
 
-            if (latestana) {
-              await Analytics.updateOne(
-                { _id: latestana._id },
+              let adRate = 0;
+
+              if (ad && ad.type && costs.type.hasOwnProperty(ad.type)) {
+                adRate += costs.type[ad.type];
+
+                if (ad.gender && costs.gender.hasOwnProperty(ad.gender)) {
+                  adRate += costs.gender[ad.gender] || 5;
+                }
+
+                if (ad.audience && costs.audience.hasOwnProperty(ad.audience)) {
+                  adRate += costs.audience[ad.audience];
+                }
+
+                // if (ad.totalbudget) {
+                //   adRate *= parseInt(ad.totalbudget);
+                // }
+              }
+
+              return adRate;
+            }
+
+            const ad1 = {
+              type: ad.type,
+              gender: user?.gender,
+              audience: ad.goal,
+              totalbudget: ad?.totalbudget,
+            };
+
+            const adRate = calculateAdRate(ad1);
+
+            if (
+              parseInt(adRate) > parseInt(advertiser.currentbalance) ||
+              parseInt(ad.totalbudget) < parseInt(ad.totalspent)
+            ) {
+              await Ads.updateOne(
+                { _id: ad._id },
+                { $set: { status: "stopped", stopreason: "Low Balance" } }
+              );
+              await Post.updateOne(
+                { _id: post._id },
+                { $set: { kind: "post" } }
+              );
+            } else {
+              //updating ad stats
+              await Ads.updateOne(
+                { _id: ad._id },
                 {
                   $inc: {
-                    impressions: imp ? imp : 0,
+                    totalspent: adRate,
                     views: view ? view : 0,
+                    clicks: click ? click : 0,
+                    impressions: imp ? imp : 0,
                     cpc: click / adRate || 0,
-                    cost: adRate,
-                    click: click ? click : 0,
                   },
                 }
               );
-            } else {
-              const an = new Analytics({
-                date: formattedDate,
-                id: post.promoid,
-                impressions: imp ? imp : 0,
-                views: view ? view : 0,
-                cpc: click / adRate || 0,
-                cost: adRate,
-                click: click ? click : 0,
-              });
-              await an.save();
-            }
-            console.log(adRate);
-            //updating creator stats
-            const com = await Community.findById(post.community);
-            if (com) {
-              if (com.ismonetized === true && inside) {
-                //giving 90% to creator
-                let moneytocreator = (adRate / 100) * 90;
-                let moneytocompany = (adRate / 100) * 10;
 
-                let earned = { how: "Ads", when: Date.now() };
-                await User.updateOne(
-                  { _id: com.creator },
+              if (latestana) {
+                await Analytics.updateOne(
+                  { _id: latestana._id },
                   {
-                    $inc: { adsearning: moneytocreator },
-                    $push: { earningtype: earned },
-                  }
-                );
-
-                let earning = {
-                  how: "Ads",
-                  amount: moneytocompany,
-                  when: Date.now(),
-                  id: ad._id,
-                };
-                await Admin.updateOne(
-                  { date: formattedDate },
-                  {
-                    $inc: { todayearning: moneytocompany },
-                    $push: { earningtype: earning },
+                    $inc: {
+                      impressions: imp ? imp : 0,
+                      views: view ? view : 0,
+                      cpc: click / adRate || 0,
+                      cost: adRate,
+                      click: click ? click : 0,
+                    },
                   }
                 );
               } else {
-                let earning = {
-                  how: "Ads",
-                  amount: adRate,
-                  when: Date.now(),
-                  id: ad._id,
-                };
-                await Admin.updateOne(
-                  { date: formattedDate },
-                  {
-                    $inc: { todayearning: adRate },
-                    $push: { earningtype: earning },
-                  }
-                );
+                const an = new Analytics({
+                  date: formattedDate,
+                  id: post.promoid,
+                  impressions: imp ? imp : 0,
+                  views: view ? view : 0,
+                  cpc: click / adRate || 0,
+                  cost: adRate,
+                  click: click ? click : 0,
+                });
+                await an.save();
               }
+              console.log(adRate);
+              //updating creator stats
+              const com = await Community.findById(post.community);
+              if (com) {
+                if (com.ismonetized === true && inside) {
+                  //giving 90% to creator
+                  let moneytocreator = (adRate / 100) * 90;
+                  let moneytocompany = (adRate / 100) * 10;
+
+                  let earned = { how: "Ads", when: Date.now() };
+                  await User.updateOne(
+                    { _id: com.creator },
+                    {
+                      $inc: { adsearning: moneytocreator },
+                      $push: { earningtype: earned },
+                    }
+                  );
+
+                  let earning = {
+                    how: "Ads",
+                    amount: moneytocompany,
+                    when: Date.now(),
+                    id: ad._id,
+                  };
+                  await Admin.updateOne(
+                    { date: formattedDate },
+                    {
+                      $inc: { todayearning: moneytocompany },
+                      $push: { earningtype: earning },
+                    }
+                  );
+                } else {
+                  let earning = {
+                    how: "Ads",
+                    amount: adRate,
+                    when: Date.now(),
+                    id: ad._id,
+                  };
+                  await Admin.updateOne(
+                    { date: formattedDate },
+                    {
+                      $inc: { todayearning: adRate },
+                      $push: { earningtype: earning },
+                    }
+                  );
+                }
+              }
+
+              let amtspt = {
+                date: Date.now(),
+                amount: adRate,
+              };
+              //deducting the amount from the advertiser
+              await Advertiser.updateOne(
+                { _id: ad.advertiserid },
+                {
+                  $inc: { currentbalance: -adRate },
+                  $push: { amountspent: amtspt },
+                }
+              );
             }
 
-            let amtspt = {
-              date: Date.now(),
-              amount: adRate,
-            };
-            //deducting the amount from the advertiser
-            await Advertiser.updateOne(
-              { _id: ad.advertiserid },
-              {
-                $inc: { currentbalance: -adRate },
-                $push: { amountspent: amtspt },
-              }
-            );
+            await Post.updateOne({ _id: post._id }, { $inc: { views: 1 } });
           }
-
-          await Post.updateOne({ _id: post._id }, { $inc: { views: 1 } });
         }
       } else {
         console.log("error inc views");
