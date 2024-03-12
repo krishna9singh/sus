@@ -383,24 +383,24 @@ const action = async () => {
       }
     } else if (select[randomNumber].text === "comment") {
       //comments will never be more than 30%
-      if (post.totalcomments / post.views < 0.3) {
-        const i = Math.floor(Math.random() * positiveComments.length);
-        const newComment = new Comment({
-          senderId: user._id,
-          postId: post._id,
-          text: positiveComments[i],
-        });
-        await newComment.save();
-        await Post.updateOne(
-          { _id: post._id },
-          {
-            $addToSet: { comments: newComment._id },
-            $inc: { totalcomments: 1 },
-          }
-        );
-      }
+      // if (post.totalcomments / post.views < 0.3) {
+      //   const i = Math.floor(Math.random() * positiveComments.length);
+      //   const newComment = new Comment({
+      //     senderId: user._id,
+      //     postId: post._id,
+      //     text: positiveComments[i],
+      //   });
+      //   await newComment.save();
+      //   await Post.updateOne(
+      //     { _id: post._id },
+      //     {
+      //       $addToSet: { comments: newComment._id },
+      //       $inc: { totalcomments: 1 },
+      //     }
+      //   );
+      // }
     } else if (select[randomNumber].text === "join") {
-      if (inc || luck === 1) {
+      if (inc || (luck === 1 && community?.totalposts > 0)) {
         if (isOwner) {
         } else if (isSubscriber) {
         } else if (community.type === "public") {
