@@ -400,7 +400,12 @@ const action = async () => {
       //   );
       // }
     } else if (select[randomNumber].text === "join") {
-      if (inc || (luck === 1 && community?.totalposts > 0)) {
+      if (
+        inc ||
+        (luck === 1 &&
+          community?.totalposts > 0 &&
+          community?.type === "public")
+      ) {
         if (isOwner) {
         } else if (isSubscriber) {
         } else if (community.type === "public") {
