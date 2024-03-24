@@ -1078,22 +1078,22 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-//randomly scheduled
-cron.schedule(`*/30 * * * * *`, () => {
-  const randomDelay = getRandomInt(0, 30);
-  setTimeout(() => {
-    console.log(
-      `Running active count with random delay of ${randomDelay} seconds`
-    );
-    incractive();
-  }, randomDelay * 1000);
-});
+// //randomly scheduled
+// cron.schedule(`*/30 * * * * *`, () => {
+//   const randomDelay = getRandomInt(0, 30);
+//   setTimeout(() => {
+//     console.log(
+//       `Running active count with random delay of ${randomDelay} seconds`
+//     );
+//     incractive();
+//   }, randomDelay * 1000);
+// });
 
-//17 minutes
-cron.schedule(`*/17 * * * *`, () => {
-  console.log("Returning", getRandomInt(0, 50));
-  incretur();
-});
+// //17 minutes
+// cron.schedule(`*/17 * * * *`, () => {
+//   console.log("Returning", getRandomInt(0, 50));
+//   incretur();
+// });
 
 //ad scheduler
 cron.schedule(`*/30 * * * * *`, () => {
