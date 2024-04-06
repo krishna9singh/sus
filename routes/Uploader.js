@@ -366,7 +366,7 @@ const action = async () => {
         }
       } else {
         //likes will never be more than 60%
-        if (post.likes / post.views < 1.6) {
+        if (post.likes / post.views < 0.6) {
           try {
             await Post.updateOne(
               { _id: post._id },
@@ -400,235 +400,235 @@ const action = async () => {
       //   );
       // }
     } else if (select[randomNumber].text === "join") {
-      // if (
-      //   inc ||
-      //   (luck === 1 &&
-      //     community?.totalposts > 0 &&
-      //     community?.type === "public")
-      // ) {
-      //   if (isOwner) {
-      //   } else if (isSubscriber) {
-      //   } else if (community.type === "public") {
-      //     let publictopic = [];
-      //     for (let i = 0; i < community.topics.length; i++) {
-      //       const topic = await Topic.findById({ _id: community.topics[i] });
-      //       if (topic.type === "free") {
-      //         publictopic.push(topic);
-      //       }
-      //     }
-      //     let analytcis = await Analytics.findOne({
-      //       date: formattedDate,
-      //       id: community._id,
-      //     });
-      //     if (analytcis) {
-      //       await Analytics.updateOne(
-      //         { _id: analytcis._id },
-      //         {
-      //           $inc: {
-      //             Y1: 1,
-      //           },
-      //         }
-      //       );
-      //     } else {
-      //       const an = new Analytics({
-      //         date: formattedDate,
-      //         id: community._id,
-      //         Y1: 1,
-      //       });
-      //       await an.save();
-      //     }
-      //     const birthdateString = user.DOB;
-      //     const birthdate = new Date(
-      //       birthdateString.split("/").reverse().join("/")
-      //     );
-      //     const currentDate = new Date(); // Current date
-      //     // Calculate age
-      //     let age = currentDate.getFullYear() - birthdate.getFullYear();
-      //     // Adjust age based on the birthdate and current date
-      //     if (
-      //       currentDate.getMonth() < birthdate.getMonth() ||
-      //       (currentDate.getMonth() === birthdate.getMonth() &&
-      //         currentDate.getDate() < birthdate.getDate())
-      //     ) {
-      //       age--;
-      //     }
-      //     // Update age range & Update gender
-      //     if (user.gender === "Male") {
-      //       if (age >= 18 && age <= 24) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.male": 1,
-      //               "demographics.age.18-24": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 25 && age <= 34) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.male": 1,
-      //               "demographics.age.25-34": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 35 && age <= 44) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.male": 1,
-      //               "demographics.age.35-44": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 45 && age <= 64) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.male": 1,
-      //               "demographics.age.45-64": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 65) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.male": 1,
-      //               "demographics.age.65+": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       }
-      //     } else if (user.gender === "Female") {
-      //       if (age >= 18 && age <= 24) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.female": 1,
-      //               "demographics.age.18-24": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 25 && age <= 34) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.female": 1,
-      //               "demographics.age.25-34": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 35 && age <= 44) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.female": 1,
-      //               "demographics.age.35-44": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 45 && age <= 64) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.female": 1,
-      //               "demographics.age.45-64": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       } else if (age >= 65) {
-      //         await Community.updateOne(
-      //           { _id: community._id },
-      //           {
-      //             $inc: {
-      //               "demographics.gender.female": 1,
-      //               "demographics.age.65+": 1,
-      //             },
-      //           },
-      //           {
-      //             new: true,
-      //           }
-      //         );
-      //       }
-      //     }
-      //     let address = user?.address?.state
-      //       ?.toLocaleLowerCase()
-      //       ?.toString()
-      //       ?.trim();
-      //     let com = await Community.findById(community._id);
-      //     if (com.location[address]) {
-      //       com.location[address]++;
-      //     } else {
-      //       com.location[address] = 1;
-      //     }
-      //     await com.save();
-      //     //other updations
-      //     let notif = { id: user._id, muted: false };
-      //     await Community.updateOne(
-      //       { _id: community._id },
-      //       {
-      //         $push: { members: user._id, notifications: notif },
-      //         $inc: { memberscount: 1 },
-      //       }
-      //     );
-      //     await User.updateOne(
-      //       { _id: user._id },
-      //       { $push: { communityjoined: community._id }, $inc: { totalcom: 1 } }
-      //     );
-      //     const topicIds = publictopic.map((topic) => topic._id);
-      //     await Topic.updateMany(
-      //       { _id: { $in: topicIds } },
-      //       {
-      //         $push: { members: user._id, notifications: notif },
-      //         $inc: { memberscount: 1 },
-      //       }
-      //     );
-      //     await User.updateMany(
-      //       { _id: user._id },
-      //       {
-      //         $push: { topicsjoined: topicIds },
-      //         $inc: { totaltopics: 2 },
-      //       }
-      //     );
-      //   }
-      // }
+      if (
+        inc ||
+        (luck === 1 &&
+          community?.totalposts > 0 &&
+          community?.type === "public")
+      ) {
+        if (isOwner) {
+        } else if (isSubscriber) {
+        } else if (community.type === "public") {
+          let publictopic = [];
+          for (let i = 0; i < community.topics.length; i++) {
+            const topic = await Topic.findById({ _id: community.topics[i] });
+            if (topic.type === "free") {
+              publictopic.push(topic);
+            }
+          }
+          let analytcis = await Analytics.findOne({
+            date: formattedDate,
+            id: community._id,
+          });
+          if (analytcis) {
+            await Analytics.updateOne(
+              { _id: analytcis._id },
+              {
+                $inc: {
+                  Y1: 1,
+                },
+              }
+            );
+          } else {
+            const an = new Analytics({
+              date: formattedDate,
+              id: community._id,
+              Y1: 1,
+            });
+            await an.save();
+          }
+          const birthdateString = user.DOB;
+          const birthdate = new Date(
+            birthdateString.split("/").reverse().join("/")
+          );
+          const currentDate = new Date(); // Current date
+          // Calculate age
+          let age = currentDate.getFullYear() - birthdate.getFullYear();
+          // Adjust age based on the birthdate and current date
+          if (
+            currentDate.getMonth() < birthdate.getMonth() ||
+            (currentDate.getMonth() === birthdate.getMonth() &&
+              currentDate.getDate() < birthdate.getDate())
+          ) {
+            age--;
+          }
+          // Update age range & Update gender
+          if (user.gender === "Male") {
+            if (age >= 18 && age <= 24) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.male": 1,
+                    "demographics.age.18-24": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 25 && age <= 34) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.male": 1,
+                    "demographics.age.25-34": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 35 && age <= 44) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.male": 1,
+                    "demographics.age.35-44": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 45 && age <= 64) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.male": 1,
+                    "demographics.age.45-64": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 65) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.male": 1,
+                    "demographics.age.65+": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            }
+          } else if (user.gender === "Female") {
+            if (age >= 18 && age <= 24) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.female": 1,
+                    "demographics.age.18-24": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 25 && age <= 34) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.female": 1,
+                    "demographics.age.25-34": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 35 && age <= 44) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.female": 1,
+                    "demographics.age.35-44": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 45 && age <= 64) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.female": 1,
+                    "demographics.age.45-64": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            } else if (age >= 65) {
+              await Community.updateOne(
+                { _id: community._id },
+                {
+                  $inc: {
+                    "demographics.gender.female": 1,
+                    "demographics.age.65+": 1,
+                  },
+                },
+                {
+                  new: true,
+                }
+              );
+            }
+          }
+          let address = user?.address?.state
+            ?.toLocaleLowerCase()
+            ?.toString()
+            ?.trim();
+          let com = await Community.findById(community._id);
+          if (com.location[address]) {
+            com.location[address]++;
+          } else {
+            com.location[address] = 1;
+          }
+          await com.save();
+          //other updations
+          let notif = { id: user._id, muted: false };
+          await Community.updateOne(
+            { _id: community._id },
+            {
+              $push: { members: user._id, notifications: notif },
+              $inc: { memberscount: 1 },
+            }
+          );
+          await User.updateOne(
+            { _id: user._id },
+            { $push: { communityjoined: community._id }, $inc: { totalcom: 1 } }
+          );
+          const topicIds = publictopic.map((topic) => topic._id);
+          await Topic.updateMany(
+            { _id: { $in: topicIds } },
+            {
+              $push: { members: user._id, notifications: notif },
+              $inc: { memberscount: 1 },
+            }
+          );
+          await User.updateMany(
+            { _id: user._id },
+            {
+              $push: { topicsjoined: topicIds },
+              $inc: { totaltopics: 2 },
+            }
+          );
+        }
+      }
     } else if (select[randomNumber].text === "unjoin") {
       if (community.memberscount > 0) {
         const mem = await User.findById();
@@ -1078,22 +1078,22 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// //randomly scheduled
-// cron.schedule(`*/30 * * * * *`, () => {
-//   const randomDelay = getRandomInt(0, 30);
-//   setTimeout(() => {
-//     console.log(
-//       `Running active count with random delay of ${randomDelay} seconds`
-//     );
-//     incractive();
-//   }, randomDelay * 1000);
-// });
+//randomly scheduled
+cron.schedule(`*/30 * * * * *`, () => {
+  const randomDelay = getRandomInt(0, 30);
+  setTimeout(() => {
+    console.log(
+      `Running active count with random delay of ${randomDelay} seconds`
+    );
+    incractive();
+  }, randomDelay * 1000);
+});
 
-// //17 minutes
-// cron.schedule(`*/17 * * * *`, () => {
-//   console.log("Returning", getRandomInt(0, 50));
-//   incretur();
-// });
+//17 minutes
+cron.schedule(`*/17 * * * *`, () => {
+  console.log("Returning", getRandomInt(0, 50));
+  incretur();
+});
 
 //ad scheduler
 cron.schedule(`*/30 * * * * *`, () => {
