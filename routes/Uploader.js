@@ -863,9 +863,9 @@ const adstat = async () => {
 
     let inside = randomNumber === 1 ? true : false;
 
-    let imp = Math.floor(Math.random() * 2);
-    let view = Math.floor(Math.random() * 2);
-    let click = Math.floor(Math.random() * 2);
+    let imp = Math.floor(Math.random() * 11);
+    let view = Math.floor(Math.random() * 7);
+    let click = Math.floor(Math.random() * 3);
 
     try {
       const post = await Post.findById(pos[0]._id);
@@ -885,6 +885,7 @@ const adstat = async () => {
         });
 
         const ad = await Ads.findById(post.promoid);
+
         if (ad) {
           const user = await User.findById(userId);
           const advertiser = await Advertiser.findById(ad.advertiserid);
@@ -892,21 +893,22 @@ const adstat = async () => {
           if (
             ad &&
             new Date(ad?.enddate) >= new Date() &&
-            ad.status !== "stopped" &&
-            advertiser
+            ad?.enddate === "Not Selected"
+              ? ad?.enddate === "Not Selected"
+              : ad.status !== "stopped" && advertiser
           ) {
             //calulating price
             function calculateAdRate(ad) {
               const costs = {
-                gender: { male: 3, female: 2 },
+                gender: { male: 4, female: 3 },
                 audience: {
-                  Sales: 9,
-                  Awareness: 5,
-                  Clicks: 10,
-                  Views: 4,
-                  Downloads: 8,
+                  Sales: 10,
+                  Awareness: 8,
+                  Clicks: 13,
+                  Views: 9,
+                  Downloads: 10,
                 },
-                type: { banner: 3, skipable: 7, "non-skipable": 9, infeed: 5 },
+                type: { banner: 4, skipable: 8, "non-skipable": 11, infeed: 8 },
               };
 
               let adRate = 0;
@@ -915,7 +917,7 @@ const adstat = async () => {
                 adRate += costs.type[ad.type];
 
                 if (ad.gender && costs.gender.hasOwnProperty(ad.gender)) {
-                  adRate += costs.gender[ad.gender] || 5;
+                  adRate += costs.gender[ad.gender] || 9;
                 }
 
                 if (ad.audience && costs.audience.hasOwnProperty(ad.audience)) {
@@ -991,7 +993,7 @@ const adstat = async () => {
                 });
                 await an.save();
               }
-              console.log(adRate);
+              console.log(ad?.adname, adRate);
               //updating creator stats
               const com = await Community.findById(post.community);
               if (com) {
@@ -1053,7 +1055,7 @@ const adstat = async () => {
               );
             }
 
-            await Post.updateOne({ _id: post._id }, { $inc: { views: 1 } });
+            await Post.updateOne({ _id: post._id }, { $inc: { views: 4 } });
           }
         }
       } else {
@@ -1096,12 +1098,11 @@ cron.schedule(`*/17 * * * *`, () => {
 });
 
 //ad scheduler
-cron.schedule(`*/30 * * * * *`, () => {
+cron.schedule(`*/15 * * * * *`, () => {
   const randomDelay = getRandomInt(0, 30);
-  setTimeout(() => {
-    console.log(`Running Ad - ${randomDelay} seconds`);
-    adstat();
-  }, randomDelay * 1000);
+
+  console.log(`Running Ad - ${randomDelay} seconds`);
+  adstat();
 });
 
 module.exports = router;
