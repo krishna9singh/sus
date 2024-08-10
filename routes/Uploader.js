@@ -348,7 +348,7 @@ const action = async () => {
 
     if (select[randomNumber].text === "view") {
       if (analytcis && post.views / analytcis.Y2 < 0.8) {
-        await Post.updateOne({ _id: post._id }, { $inc: { views: 1 } });
+        await Post.updateOne({ _id: post._id }, { $inc: { views: 7 } });
       }
     } else if (select[randomNumber].text === "like") {
       if (post.likedby.includes(user._id)) {
@@ -370,7 +370,7 @@ const action = async () => {
           try {
             await Post.updateOne(
               { _id: post._id },
-              { $addToSet: { likedby: user._id }, $inc: { likes: 1 } }
+              { $addToSet: { likedby: user._id }, $inc: { likes: 9 } }
             );
             await User.updateOne(
               { _id: user._id },
